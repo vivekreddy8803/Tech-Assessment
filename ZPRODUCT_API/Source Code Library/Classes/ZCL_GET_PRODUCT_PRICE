@@ -1,0 +1,70 @@
+* This is the implementation class for the CDS view ZI_PRODUCT_PRICE
+* with custom entities.
+CLASS zcl_get_product_price DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC .
+
+  PUBLIC SECTION.
+* Since we are using CDS view with custom entity and implementation class,
+* Interface IF_RAP_QUERY_PROVIDER has to be used for the class to get the
+* input parameters and set the output data.
+    INTERFACES  if_rap_query_provider .
+  PROTECTED SECTION.
+  PRIVATE SECTION.
+* External NoSQL DB URL.
+    CONSTANTS: base_url TYPE string VALUE 'https://2zxbij326d:nbflsq61q4@nosql-db-8461223500.us-east-1.bonsaisearch.net:443/product_prices/_doc/'.
+
+ENDCLASS.
+
+CLASS zcl_get_product_price IMPLEMENTATION.
+  METHOD if_rap_query_provider~select.
+
+* Internal table to be returned , easier to handle return if internal table is as same type of our data definition
+    DATA:lt_result   TYPE  TABLE OF ZI_product_price.
+
+    TRY.
+        TRY.
+* Input filters for this CDS view comes from the main view ZI_PRODUCT_DTLS
+            IF io_request->is_data_requested( ). "Fetching incoming data
+              io_request->get_paging( ).
+              TRY.
+* getting the filter parameters as range
+                  DATA(lt_filter_cond) = io_request->get_filter( )->get_as_ranges( ).
+                CATCH cx_rap_query_filter_no_range.
+              ENDTRY.
+              TRY.
+* Only one filter will be coming from main entity.
+* Read the filter parameter into a range table.
+
+** Field PRODUCT_ID
+                  LOOP AT lt_filter_cond[ name   = 'PRODUCT_ID' ]-range ASSIGNING FIELD-SYMBOL(<lfs_filter>).
+                    APPEND INITIAL LINE TO lt_result ASSIGNING FIELD-SYMBOL(<lfs_result>).
+                    <lfs_result>-product_id = <lfs_filter>-low.
+** Get product price and currency code from external NoSQL DB.
+                    DATA(li_srv)    = NEW zconsume_srv( iv_url = base_url && <lfs_filter>-low ).
+                    DATA(lt_data)   = li_srv->gt_data.
+
+                    IF lt_data IS BOUND.
+** Extract product price and Currency code from retrieved JSON string.
+                      zcl_utility=>get_product_price(
+                      EXPORTING iv_data         = lt_data
+                      IMPORTING ev_prod_curr    = <lfs_result>-currency_code        " Product price
+                               ev_prod_price    = <lfs_result>-product_price ).     " Currency code
+
+                    ENDIF.
+                  ENDLOOP.
+                CATCH cx_sy_itab_line_not_found.
+              ENDTRY.
+* setting the total number of records which will be sent
+              io_response->set_total_number_of_records( lines( lt_result  ) ).
+* returning the data as internal table
+              io_response->set_data( lt_result  ).
+            ENDIF.
+          CATCH cx_rap_query_provider INTO DATA(lx_exc).
+        ENDTRY.
+      CATCH cx_rfc_dest_provider_error INTO DATA(lx_dest).
+    ENDTRY.
+  ENDMETHOD.
+
+ENDCLASS.

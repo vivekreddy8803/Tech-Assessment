@@ -1,0 +1,173 @@
+** Utility class is created to organize the code in different methods for readability
+** and easiness to understand the process flow.
+
+CLASS zcl_utility DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC .
+
+  PUBLIC SECTION.
+* Static methods
+    CLASS-METHODS:
+* Method GET_PRODUCT_DATA.
+** This method is used to get the product header data (in our case from table ZPRODUCT_DETAILS)
+      get_product_data IMPORTING irt_prod_id     TYPE zrtt_prod_id OPTIONAL
+                                 irt_id_type     TYPE zrtt_id_type OPTIONAL
+                                 irt_product_cat TYPE zrtt_prod_cat OPTIONAL
+                       EXPORTING et_product_dtls TYPE ztt_product_dtls,
+
+* Method GET_PRODUCT_NAME
+** This method is used to extract product name we are getting from external REST service.
+      get_product_name IMPORTING iv_data      TYPE REF TO data
+                       EXPORTING ev_prod_name TYPE zprod_name,
+
+* Method GET_PRODUCT_PRICE
+** This method is used to extract product price and currency code
+** we are getting from NoSQL DB( in our case "bonsai.io").
+      get_product_price IMPORTING iv_data       TYPE REF TO data
+                        EXPORTING ev_prod_price TYPE zprod_price
+                                  ev_prod_curr  TYPE /dmo/currency_code,
+
+* Method GET_FILTERS
+** This method is used to format input filters and create range types of the filters.
+      get_filters       IMPORTING iv_request      TYPE REF TO if_rap_query_request
+                        EXPORTING ert_prod_id     TYPE zrtt_prod_id
+                                  ert_id_type     TYPE zrtt_id_type
+                                  ert_product_cat TYPE zrtt_prod_cat.
+  PROTECTED SECTION.
+  PRIVATE SECTION.
+CONSTANTS: gc_product_id    TYPE string value 'PRODUCT_ID',
+           gc_id_type       TYPE string VALUE 'ID_TYPE',
+           gc_prod_cat      TYPE string VALUE 'PRODUCT_CAT'.
+ENDCLASS.
+
+CLASS zcl_utility IMPLEMENTATION.
+
+  METHOD get_product_data.
+* Get all Product master data based on input filters.
+    SELECT * FROM zproduct_dtls WHERE product_id  IN @irt_prod_id       " Product ID
+                                  AND id_type     IN @irt_id_type       " ID Type
+                                  AND product_cat IN @irt_product_cat   " Product Category
+                                          INTO TABLE @et_product_dtls.  " Product Master data
+  ENDMETHOD.
+
+  METHOD get_product_name.
+* Format JSON file which was converted to a string
+* and get the product title from converted string.
+    FIELD-SYMBOLS:  <ls_data>  TYPE any.
+    ASSIGN iv_data->* TO FIELD-SYMBOL(<lfs_data>).
+    IF <lfs_data> IS ASSIGNED.
+      ASSIGN COMPONENT `PRODUCT` OF STRUCTURE  <lfs_data> TO FIELD-SYMBOL(<lfs_product>).
+      IF sy-subrc = 0.
+        ASSIGN <lfs_product>->* TO <ls_data>.
+        ASSIGN COMPONENT `ITEM` OF STRUCTURE  <ls_data> TO FIELD-SYMBOL(<lfs_item>).
+        IF sy-subrc = 0.
+          ASSIGN <lfs_item>->* TO <ls_data>.
+          ASSIGN COMPONENT `PRODUCT_DESCRIPTION` OF STRUCTURE  <ls_data> TO FIELD-SYMBOL(<lfs_prod_desc>).
+          IF sy-subrc = 0.
+            ASSIGN <lfs_prod_desc>->* TO <ls_data>.
+            ASSIGN COMPONENT `TITLE` OF STRUCTURE  <ls_data> TO FIELD-SYMBOL(<lfs_title>).
+            IF sy-subrc = 0.
+              ASSIGN <lfs_title>->* TO <ls_data>.
+              IF <ls_data> IS ASSIGNED.
+                ev_prod_name = <ls_data>.
+              ENDIF.
+            ENDIF.
+          ENDIF.
+        ENDIF.
+      ENDIF.
+    ENDIF.
+
+  ENDMETHOD.
+
+  METHOD get_product_price.
+* Format NoSQL JSON file which was converted to a string
+* and get the product price and currency code from converted string.
+    FIELD-SYMBOLS:  <ls_data>  TYPE any.
+    ASSIGN iv_data->* TO FIELD-SYMBOL(<lfs_data>).
+    IF <lfs_data> IS ASSIGNED.
+      ASSIGN COMPONENT `_SOURCE` OF STRUCTURE  <lfs_data> TO FIELD-SYMBOL(<lfs_source>).
+      IF sy-subrc = 0.
+        ASSIGN <lfs_source>->* TO <ls_data>.
+        ASSIGN COMPONENT `CURRENT_PRICE` OF STRUCTURE  <ls_data> TO FIELD-SYMBOL(<lfs_curr_price>).
+        IF sy-subrc = 0.
+          ASSIGN <lfs_curr_price>->* TO <ls_data>.
+          ASSIGN COMPONENT `CURRENCY_CODE` OF STRUCTURE  <ls_data> TO FIELD-SYMBOL(<lfs_curr_code>).
+          IF sy-subrc = 0.
+            ASSIGN <lfs_curr_code>->* TO <ls_data>.
+            IF <ls_data> IS ASSIGNED.
+              ev_prod_curr = <ls_data>.
+            ENDIF.
+            ASSIGN <lfs_curr_price>->* TO <ls_data>.
+            ASSIGN COMPONENT `VALUE` OF STRUCTURE  <ls_data> TO FIELD-SYMBOL(<lfs_value>).
+            IF sy-subrc = 0.
+              ASSIGN <lfs_value>->* TO <ls_data>.
+              IF <ls_data> IS ASSIGNED.
+                ev_prod_price = <ls_data>.
+              ENDIF.
+            ENDIF.
+          ENDIF.
+        ENDIF.
+      ENDIF.
+    ENDIF.
+  ENDMETHOD.
+
+  METHOD get_filters.
+* All input filters from the query are converted to range tables
+* to be able to query from master table.
+    TRY.
+        TRY.
+* iv_request contains all the query filter parameters
+            IF iv_request->is_data_requested( ). "Fetching incoming data
+              iv_request->get_paging( ).
+              TRY.
+* getting the filter parameters as range
+                  DATA(lt_filter_cond) = iv_request->get_filter( )->get_as_ranges( ). "Setting the filter condition, fetching parameter names from data definition
+                CATCH cx_rap_query_filter_no_range.
+              ENDTRY.
+              TRY.
+* All filters queried will be in the same table lt_filter_cond.
+* Read the filter parameters and separate them based on field name
+
+** Field PRODUCT_ID
+                  LOOP AT lt_filter_cond[ name = gc_product_id ]-range ASSIGNING FIELD-SYMBOL(<lfs_filter>).
+                    APPEND INITIAL LINE TO ert_prod_id ASSIGNING FIELD-SYMBOL(<lfs_prod_id>).
+                    <lfs_prod_id>-sign = <lfs_filter>-sign.
+                    <lfs_prod_id>-option = <lfs_filter>-option.
+                    <lfs_prod_id>-low = <lfs_filter>-low.
+                    <lfs_prod_id>-high = <lfs_filter>-high.
+                  ENDLOOP.
+                CATCH cx_sy_itab_line_not_found.
+              ENDTRY.
+
+** Field ID_TYPE
+              TRY.
+                  LOOP AT lt_filter_cond[ name = gc_id_type ]-range ASSIGNING <lfs_filter>.
+                    APPEND INITIAL LINE TO ert_id_type ASSIGNING FIELD-SYMBOL(<lfs_id_type>).
+                    <lfs_id_type>-sign = <lfs_filter>-sign.
+                    <lfs_id_type>-option = <lfs_filter>-option.
+                    <lfs_id_type>-low = <lfs_filter>-low.
+                    <lfs_id_type>-high = <lfs_filter>-high.
+                  ENDLOOP.
+                CATCH cx_sy_itab_line_not_found.
+              ENDTRY.
+
+** Field PRODUCT_CAT
+              TRY.
+                  LOOP AT lt_filter_cond[ name   = gc_prod_cat ]-range ASSIGNING <lfs_filter>.
+                    APPEND INITIAL LINE TO ert_product_cat ASSIGNING FIELD-SYMBOL(<lfs_prod_cat>).
+                    <lfs_prod_cat>-sign = <lfs_filter>-sign.
+                    <lfs_prod_cat>-option = <lfs_filter>-option.
+                    <lfs_prod_cat>-low = <lfs_filter>-low.
+                    <lfs_prod_cat>-high = <lfs_filter>-high.
+                  ENDLOOP.
+                CATCH cx_sy_itab_line_not_found.
+              ENDTRY.
+            ENDIF.
+          CATCH cx_rap_query_provider INTO DATA(lx_exc).
+        ENDTRY.
+      CATCH cx_rfc_dest_provider_error INTO DATA(lx_dest).
+    ENDTRY.
+  ENDMETHOD.
+
+ENDCLASS.

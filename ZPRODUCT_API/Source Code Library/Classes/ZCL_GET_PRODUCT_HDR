@@ -1,0 +1,63 @@
+* This is the implementation class for the CDS view ZI_PRODUCT_DTLS
+* with custom entities.
+CLASS zcl_get_product_hdr DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC .
+
+  PUBLIC SECTION.
+* Since we are using CDS view with custom entity and implementation class,
+* Interface IF_RAP_QUERY_PROVIDER has to be used for the class to get the
+* input parameters and set the output data.
+    INTERFACES  if_rap_query_provider .
+  PROTECTED SECTION.
+  PRIVATE SECTION.
+
+* External REST service URL.
+    CONSTANTS: base_url TYPE string VALUE 'https://redsky.target.com/v3/pdp/tcin/',
+               url_ext  TYPE string VALUE '?excludes=taxonomy,price,promotion,bulk_ship,rating_and_review_reviews,rating_and_review_statistics,question_answer_statistics&key=candidate'.
+ENDCLASS.
+
+
+CLASS zcl_get_product_hdr IMPLEMENTATION.
+  METHOD if_rap_query_provider~select.
+
+* Internal table to be returned , easier to handle return if internal table is as same type of our data definition
+    DATA:lt_result   TYPE  TABLE OF zi_product_dtls.
+
+* Get formatted filters to be able to query master data
+    zcl_utility=>get_filters(
+    EXPORTING iv_request        = io_request                " Input request
+    IMPORTING ert_prod_id       = DATA(lrt_prod_id)         " Filter: PRODUCT_D
+              ert_product_cat   = DATA(lrt_product_cat)     " Filter: PRODUCT_CATEGORY
+              ert_id_type       = DATA(lrt_id_type) ).      " Filter: ID_TYPE
+
+* Get product master data based on input filters(in out case from table ZPRODUCT_DTLS)
+    zcl_utility=>get_product_data(
+    EXPORTING irt_prod_id       = lrt_prod_id
+              irt_product_cat   = lrt_product_cat
+              irt_id_type       = lrt_id_type
+    IMPORTING et_product_dtls   = DATA(lt_product_dtls) ).
+
+* Populate the result table with the retrieved master data
+    LOOP AT lt_product_dtls ASSIGNING FIELD-SYMBOL(<lfs_product_dtls>).
+      APPEND INITIAL LINE TO lt_result ASSIGNING FIELD-SYMBOL(<lfs_result>).
+      MOVE-CORRESPONDING <lfs_product_dtls> TO <lfs_result>.
+** Get product title from external API.
+      DATA(li_srv) = NEW zcl_consume_srv( iv_url = base_url && <lfs_product_dtls>-product_id && url_ext ).
+      DATA(lt_data) = li_srv->gt_data.
+** Extract product title from retrieved JSON string.
+      IF lt_data IS BOUND.
+        zcl_utility=>get_product_name(
+        EXPORTING iv_data       = lt_data
+        IMPORTING ev_prod_name  = <lfs_result>-product_name ).
+      ENDIF.
+    ENDLOOP.
+* setting the total number of records which will be sent
+    io_response->set_total_number_of_records( lines( lt_result  ) ).
+* returning the data as internal table
+    io_response->set_data( lt_result  ).
+
+  ENDMETHOD.
+
+ENDCLASS.
