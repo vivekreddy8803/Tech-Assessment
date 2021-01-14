@@ -1,0 +1,9 @@
+@EndUserText.label : 'Range structure of Product ID'
+@AbapCatalog.enhancementCategory : #NOT_EXTENSIBLE
+define structure zrs_prod_cat {
+  sign   : ddsign;
+  option : ddoption;
+  low    : zprod_cat;
+  high   : zprod_cat;
+
+}

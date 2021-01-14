@@ -1,0 +1,10 @@
+#Format
+
+Data Type: CHAR
+Length: 3
+
+#Fixed Values
+
+001 - Home
+002 - Office
+003 - Food
