@@ -1,0 +1,5 @@
+@EndUserText.label: 'Product Details'
+define service ZSD_Product_DTLS {
+  expose zi_product_dtls as product;
+  expose zi_product_price as price;
+}
