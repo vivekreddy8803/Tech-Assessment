@@ -1,0 +1,12 @@
+@EndUserText.label : 'Product Details'
+@AbapCatalog.enhancementCategory : #NOT_EXTENSIBLE
+@AbapCatalog.tableCategory : #TRANSPARENT
+@AbapCatalog.deliveryClass : #A
+@AbapCatalog.dataMaintenance : #RESTRICTED
+define table zproduct_dtls {
+  key client     : abap.clnt not null;
+  key product_id : zprod_id not null;
+  id_type        : zid_type;
+  product_cat    : zprod_cat;
+
+}
