@@ -1,0 +1,9 @@
+@ObjectModel.query.implementedBy  : 'ABAP:ZCL_GET_PRODUCT_PRICE'
+@EndUserText.label: 'Product Price'
+define custom entity zi_product_price 
+ {
+  key product_id    : zprod_id;
+    @Semantics.amount.currencyCode : 'currency_code' 
+      product_price : zprod_price;
+      currency_code : /dmo/currency_code;
+}

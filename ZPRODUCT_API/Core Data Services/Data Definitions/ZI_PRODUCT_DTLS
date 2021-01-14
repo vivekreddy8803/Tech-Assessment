@@ -1,0 +1,13 @@
+@ObjectModel.query.implementedBy  : 'ABAP:ZCL_GET_PRODUCT_HDR'
+@EndUserText.label: 'Product details'
+define custom entity zi_product_dtls
+// with parameters product_id : zprod_id 
+ {
+  key product_id  : zprod_id;
+      product_name: zprod_name;
+      id_type     : zid_type;
+      product_cat : zprod_cat;
+      
+      _price : association [0..1] to zi_product_price on _price.product_id = zi_product_dtls.product_id;      
+  
+}
