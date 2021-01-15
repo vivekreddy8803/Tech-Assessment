@@ -42,7 +42,7 @@ CLASS zcl_get_product_price IMPLEMENTATION.
                     APPEND INITIAL LINE TO lt_result ASSIGNING FIELD-SYMBOL(<lfs_result>).
                     <lfs_result>-product_id = <lfs_filter>-low.
 ** Get product price and currency code from external NoSQL DB.
-                    DATA(li_srv)    = NEW zconsume_srv( iv_url = base_url && <lfs_filter>-low ).
+                    DATA(li_srv)    = NEW zcl_consume_srv( iv_url = base_url && <lfs_filter>-low ).
                     DATA(lt_data)   = li_srv->gt_data.
 
                     IF lt_data IS BOUND.
