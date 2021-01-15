@@ -1,0 +1,90 @@
+{
+  "d": {
+    "results": [
+      {
+        "__metadata": {
+          "id": "https://48d61f78-e6aa-480f-94e4-ecaf26360dcb.abap-web.us10.hana.ondemand.com:443/sap/opu/odata/sap/ZSD_PRODUCT_DETAILS/product('13860428')",
+          "uri": "https://48d61f78-e6aa-480f-94e4-ecaf26360dcb.abap-web.us10.hana.ondemand.com:443/sap/opu/odata/sap/ZSD_PRODUCT_DETAILS/product('13860428')",
+          "type": "cds_zsd_product_dtls.productType"
+        },
+        "product_id": "13860428",
+        "product_name": "",
+        "id_type": "TCIN",
+        "product_cat": "001",
+        "to_price": {
+          "__metadata": {
+            "id": "https://48d61f78-e6aa-480f-94e4-ecaf26360dcb.abap-web.us10.hana.ondemand.com:443/sap/opu/odata/sap/ZSD_PRODUCT_DETAILS/price('13860428')",
+            "uri": "https://48d61f78-e6aa-480f-94e4-ecaf26360dcb.abap-web.us10.hana.ondemand.com:443/sap/opu/odata/sap/ZSD_PRODUCT_DETAILS/price('13860428')",
+            "type": "cds_zsd_product_dtls.priceType"
+          },
+          "product_id": "13860428",
+          "product_price": "15.49",
+          "currency_code": "USD"
+        }
+      },
+      {
+        "__metadata": {
+          "id": "https://48d61f78-e6aa-480f-94e4-ecaf26360dcb.abap-web.us10.hana.ondemand.com:443/sap/opu/odata/sap/ZSD_PRODUCT_DETAILS/product('54456119')",
+          "uri": "https://48d61f78-e6aa-480f-94e4-ecaf26360dcb.abap-web.us10.hana.ondemand.com:443/sap/opu/odata/sap/ZSD_PRODUCT_DETAILS/product('54456119')",
+          "type": "cds_zsd_product_dtls.productType"
+        },
+        "product_id": "54456119",
+        "product_name": "",
+        "id_type": "TCIN",
+        "product_cat": "003",
+        "to_price": {
+          "__metadata": {
+            "id": "https://48d61f78-e6aa-480f-94e4-ecaf26360dcb.abap-web.us10.hana.ondemand.com:443/sap/opu/odata/sap/ZSD_PRODUCT_DETAILS/price('54456119')",
+            "uri": "https://48d61f78-e6aa-480f-94e4-ecaf26360dcb.abap-web.us10.hana.ondemand.com:443/sap/opu/odata/sap/ZSD_PRODUCT_DETAILS/price('54456119')",
+            "type": "cds_zsd_product_dtls.priceType"
+          },
+          "product_id": "54456119",
+          "product_price": "12.59",
+          "currency_code": "USD"
+        }
+      },
+      {
+        "__metadata": {
+          "id": "https://48d61f78-e6aa-480f-94e4-ecaf26360dcb.abap-web.us10.hana.ondemand.com:443/sap/opu/odata/sap/ZSD_PRODUCT_DETAILS/product('13264003')",
+          "uri": "https://48d61f78-e6aa-480f-94e4-ecaf26360dcb.abap-web.us10.hana.ondemand.com:443/sap/opu/odata/sap/ZSD_PRODUCT_DETAILS/product('13264003')",
+          "type": "cds_zsd_product_dtls.productType"
+        },
+        "product_id": "13264003",
+        "product_name": "Jif Natural Creamy Peanut Butter - 40oz",
+        "id_type": "TCIN",
+        "product_cat": "003",
+        "to_price": {
+          "__metadata": {
+            "id": "https://48d61f78-e6aa-480f-94e4-ecaf26360dcb.abap-web.us10.hana.ondemand.com:443/sap/opu/odata/sap/ZSD_PRODUCT_DETAILS/price('13264003')",
+            "uri": "https://48d61f78-e6aa-480f-94e4-ecaf26360dcb.abap-web.us10.hana.ondemand.com:443/sap/opu/odata/sap/ZSD_PRODUCT_DETAILS/price('13264003')",
+            "type": "cds_zsd_product_dtls.priceType"
+          },
+          "product_id": "13264003",
+          "product_price": "9.59",
+          "currency_code": "CAD"
+        }
+      },
+      {
+        "__metadata": {
+          "id": "https://48d61f78-e6aa-480f-94e4-ecaf26360dcb.abap-web.us10.hana.ondemand.com:443/sap/opu/odata/sap/ZSD_PRODUCT_DETAILS/product('12954218')",
+          "uri": "https://48d61f78-e6aa-480f-94e4-ecaf26360dcb.abap-web.us10.hana.ondemand.com:443/sap/opu/odata/sap/ZSD_PRODUCT_DETAILS/product('12954218')",
+          "type": "cds_zsd_product_dtls.productType"
+        },
+        "product_id": "12954218",
+        "product_name": "Kraft Macaroni &#38; Cheese Dinner Original - 7.25oz",
+        "id_type": "TCIN",
+        "product_cat": "001",
+        "to_price": {
+          "__metadata": {
+            "id": "https://48d61f78-e6aa-480f-94e4-ecaf26360dcb.abap-web.us10.hana.ondemand.com:443/sap/opu/odata/sap/ZSD_PRODUCT_DETAILS/price('12954218')",
+            "uri": "https://48d61f78-e6aa-480f-94e4-ecaf26360dcb.abap-web.us10.hana.ondemand.com:443/sap/opu/odata/sap/ZSD_PRODUCT_DETAILS/price('12954218')",
+            "type": "cds_zsd_product_dtls.priceType"
+          },
+          "product_id": "12954218",
+          "product_price": "17.17",
+          "currency_code": "CAD"
+        }
+      }
+    ]
+  }
+}
