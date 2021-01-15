@@ -1,0 +1,28 @@
+CLASS zprod_data DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC .
+
+  PUBLIC SECTION.
+    INTERFACES if_oo_adt_classrun.
+    METHODS: add_data.
+  PROTECTED SECTION.
+  PRIVATE SECTION.
+ENDCLASS.
+
+
+
+CLASS zprod_data IMPLEMENTATION.
+
+  METHOD add_data.
+    DATA zprod_data TYPE TABLE OF zproduct_dtls.
+    zprod_data = VALUE #( (  product_id = '12954218' id_type = 'TCIN' product_cat = '001' ) ).
+*DELETE from zproduct.
+    INSERT zproduct_dtls FROM TABLE @zprod_data.
+  ENDMETHOD.
+
+  METHOD if_oo_adt_classrun~main.
+    add_data( ).
+  ENDMETHOD.
+
+ENDCLASS.
