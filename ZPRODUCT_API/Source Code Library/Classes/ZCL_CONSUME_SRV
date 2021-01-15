@@ -47,8 +47,7 @@ CLASS zcl_consume_srv IMPLEMENTATION.
 
   METHOD read_posts.
     " Get JSON for the specified URL
-    DATA(url) = |{ iv_url }|.
-    DATA(client) = create_client( url ).
+    DATA(client) = create_client( iv_url ).
     DATA(lv_response) = client->execute( if_web_http_client=>get )->get_text(  ).
 *  client->close(  ).
 
