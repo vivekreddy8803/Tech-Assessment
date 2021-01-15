@@ -30,7 +30,7 @@ As per requirement, we are getting data from three different sources( NoSQL DB, 
 	- URL looks like <https://48d61f78-e6aa-480f-94e4-ecaf26360dcb.abap-web.us10.hana.ondemand.com/sap/opu/odata/sap/ZSD_PRODUCT_DETAILS/?sap-client=100>
 - From URL, replace the portion after /ZSD_PRODUCT_DETAILS/ with <b>product?&$format=json</b> to get all the product list.
 	- URL looks like  <https://48d61f78-e6aa-480f-94e4-ecaf26360dcb.abap-web.us10.hana.ondemand.com/sap/opu/odata/sap/ZSD_PRODUCT_DETAILS/product?&$format=json>
-- To get Product price, along with product list replace the portion after /ZSD_PRODUCT_DETAILS/ with <b>product?&\$expand=to_price&$format=json<b>
+- To get Product price, along with product list replace the portion after /ZSD_PRODUCT_DETAILS/ with <b>product?&\$expand=to_price&$format=json</b>
 	- URL looks like  <https://48d61f78-e6aa-480f-94e4-ecaf26360dcb.abap-web.us10.hana.ondemand.com/sap/opu/odata/sap/ZSD_PRODUCT_DETAILS/product?&$expand=to_price&$format=json>
 - To use filters,	replace the portion after /ZSD_PRODUCT_DETAILS/ with with <b>product&\$expand=to_price&\$filter=product_id%20eq%20%2713860428%27&$format=json</b>
 	- URL looks like <https://48d61f78-e6aa-480f-94e4-ecaf26360dcb.abap-web.us10.hana.ondemand.com/sap/opu/odata/sap/ZSD_PRODUCT_DETAILS/product&$expand=to_price&$filter=product_id%20eq%20%2713860428%27&$format=json>.
