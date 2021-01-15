@@ -2,7 +2,7 @@
 
 #Overview:
 
-I have created a REST service exposing CDS views for the requirement specified in Tech assessment case study using SAP trial cloud platform.
+I have created a REST service exposing CDS views for the requirement specified in Tech assessment case study using SAP trial cloud platform in Eclipse.
 As per requirement, we are getting data from three different sources( NoSQL DB, redsky.target.com and within SAP ), aggregating the data and returning it as JSON to the caller.
 
 
