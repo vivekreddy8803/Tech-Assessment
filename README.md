@@ -35,6 +35,7 @@ As per requirement, we are getting data from three different sources( NoSQL DB, 
 - To use filters,	replace the portion after /ZSD_PRODUCT_DETAILS/ with with <b>product&\$expand=to_price&\$filter=product_id%20eq%20%2713860428%27&$format=json</b>
 	- URL looks like <https://48d61f78-e6aa-480f-94e4-ecaf26360dcb.abap-web.us10.hana.ondemand.com/sap/opu/odata/sap/ZSD_PRODUCT_DETAILS/product&$expand=to_price&$filter=product_id%20eq%20%2713860428%27&$format=json>.
 	- We have following filters product_id, product_cat and id_type. We can mix and match filters as needed.
+- Example URL with multiple filters <https://48d61f78-e6aa-480f-94e4-ecaf26360dcb.abap-web.us10.hana.ondemand.com/sap/opu/odata/sap/ZSD_PRODUCT_DETAILS/product?&$expand=to_price&$format=json&$filter=product_cat%20eq%20%27003%27%20and%20product_id%20eq%20%2713264003%27>	
 	
 # NOTE: We are getting Product_name from redsky.target.com and Product_pice from NoSQL DB(In our case bonsai.io).
 
